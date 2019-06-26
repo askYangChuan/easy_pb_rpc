@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "rpc_server.h"
-#include "svc_name2id.h"
 #include "rpc_controller.h"
 
 using namespace PBRPC;
@@ -48,9 +47,7 @@ inline void DoAccept(evutil_socket_t listener, short event, void *arg) {
 }
 
 bool RpcServer::RegisterService(::google::protobuf::Service *service) {
-	const google::protobuf::ServiceDescriptor *sd = service->GetDescriptor();
-	unsigned int svc_id = SERVICE_NAME2ID::instance()->RpcServiceName2Id(sd->name().c_str());
-	return _service_mgr.RegisterRpcService(service, svc_id);
+	return _service_mgr.RegisterRpcService(service);
 }
 
 void RpcServer::Start() {

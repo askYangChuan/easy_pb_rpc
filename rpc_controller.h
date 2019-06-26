@@ -5,15 +5,15 @@ namespace PBRPC {
 	using std::string;
 	class RpcController : public google::protobuf::RpcController {
 		string _error_str;
-		bool _is_failed;
+        int _errno;
 		public:
 		RpcController() { Reset(); }
 		void Reset() {
 			_error_str = "";
-			_is_failed = false;
+			_errno = 0;
 		}
 		bool Failed() const {
-			return _is_failed;
+			return _errno != 0;
 		}
 		string ErrorText() const {
 			return _error_str;
@@ -22,8 +22,8 @@ namespace PBRPC {
 			return ;
 		}
 		void SetFailed(const string &reason) {
-			_is_failed = true;
 			_error_str = reason;
+            _errno = 1;
 		}
 		bool IsCanceled() const { // NOT IMPL
 			return false;

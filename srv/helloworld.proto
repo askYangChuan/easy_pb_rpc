@@ -22,5 +22,5 @@ message DooResponse {
 
 service EchoService {
 	rpc Foo(FooRequest) returns(FooResponse);
-	rpc Doo(DooRequest) returns(DooResponse);
+	//rpc Doo(DooRequest) returns(DooResponse);
 }

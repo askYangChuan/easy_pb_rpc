@@ -152,10 +152,9 @@ void protobuf_AddDesc_helloworld_2eproto() {
     "\030\001 \002(\t\022\r\n\005times\030\002 \001(\005\"+\n\013FooResponse\022\014\n\004"
     "text\030\001 \002(\t\022\016\n\006result\030\002 \001(\010\")\n\nDooRequest"
     "\022\014\n\004text\030\001 \002(\t\022\r\n\005times\030\002 \001(\005\"+\n\013DooResp"
-    "onse\022\014\n\004text\030\001 \002(\t\022\016\n\006result\030\002 \001(\0102Q\n\013Ec"
+    "onse\022\014\n\004text\030\001 \002(\t\022\016\n\006result\030\002 \001(\0102/\n\013Ec"
     "hoService\022 \n\003Foo\022\013.FooRequest\032\014.FooRespo"
-    "nse\022 \n\003Doo\022\013.DooRequest\032\014.DooResponseB\003\200"
-    "\001\001", 282);
+    "nseB\003\200\001\001", 248);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "helloworld.proto", &protobuf_RegisterTypes);
   FooRequest::default_instance_ = new FooRequest();
@@ -1258,14 +1257,6 @@ void EchoService::Foo(::google::protobuf::RpcController* controller,
   done->Run();
 }
 
-void EchoService::Doo(::google::protobuf::RpcController* controller,
-                         const ::DooRequest*,
-                         ::DooResponse*,
-                         ::google::protobuf::Closure* done) {
-  controller->SetFailed("Method Doo() not implemented.");
-  done->Run();
-}
-
 void EchoService::CallMethod(const ::google::protobuf::MethodDescriptor* method,
                              ::google::protobuf::RpcController* controller,
                              const ::google::protobuf::Message* request,
@@ -1277,12 +1268,6 @@ void EchoService::CallMethod(const ::google::protobuf::MethodDescriptor* method,
       Foo(controller,
              ::google::protobuf::down_cast<const ::FooRequest*>(request),
              ::google::protobuf::down_cast< ::FooResponse*>(response),
-             done);
-      break;
-    case 1:
-      Doo(controller,
-             ::google::protobuf::down_cast<const ::DooRequest*>(request),
-             ::google::protobuf::down_cast< ::DooResponse*>(response),
              done);
       break;
     default:
@@ -1297,8 +1282,6 @@ const ::google::protobuf::Message& EchoService::GetRequestPrototype(
   switch(method->index()) {
     case 0:
       return ::FooRequest::default_instance();
-    case 1:
-      return ::DooRequest::default_instance();
     default:
       GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
       return *reinterpret_cast< ::google::protobuf::Message*>(NULL);
@@ -1311,8 +1294,6 @@ const ::google::protobuf::Message& EchoService::GetResponsePrototype(
   switch(method->index()) {
     case 0:
       return ::FooResponse::default_instance();
-    case 1:
-      return ::DooResponse::default_instance();
     default:
       GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
       return *reinterpret_cast< ::google::protobuf::Message*>(NULL);
@@ -1335,13 +1316,6 @@ void EchoService_Stub::Foo(::google::protobuf::RpcController* controller,
                               ::FooResponse* response,
                               ::google::protobuf::Closure* done) {
   channel_->CallMethod(descriptor()->method(0),
-                       controller, request, response, done);
-}
-void EchoService_Stub::Doo(::google::protobuf::RpcController* controller,
-                              const ::DooRequest* request,
-                              ::DooResponse* response,
-                              ::google::protobuf::Closure* done) {
-  channel_->CallMethod(descriptor()->method(1),
                        controller, request, response, done);
 }
 

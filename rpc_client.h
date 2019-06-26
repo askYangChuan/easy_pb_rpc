@@ -21,8 +21,7 @@ namespace PBRPC {
 				union {
 					struct {
 						std::string *_req_data;
-						unsigned int _service_id;
-						unsigned int _method_id;
+                        std::string *_service_name;
 						struct {
 							google::protobuf::Message *_response;
 							google::protobuf::Closure *_c;
@@ -80,6 +79,7 @@ namespace PBRPC {
 			google::protobuf::RpcController *_controller;
 			google::protobuf::Message *_response;
 			google::protobuf::Closure *_c;
+            std::string _service_name;
 			int _wake_fd;
 		};
 	private:
@@ -155,7 +155,7 @@ namespace PBRPC {
 
 			bool Start(google::protobuf::RpcController *);
 			bool CallMsgEnqueue(unsigned int session_id, std::string *req_data, 
-									unsigned int sevice_id, unsigned int method_id,
+									std::string *service_name,
 									google::protobuf::RpcController *controller, 
 									google::protobuf::Message *response, 
 									google::protobuf::Closure *c, int wake_fd

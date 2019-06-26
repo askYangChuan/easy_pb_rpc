@@ -2,9 +2,9 @@ INCLUDES=-I../
 LDFLAGS=-lpthread -lprotobuf -levent -L/usr/local/lib
 CFLAGS=-g
 
-COMMON = common.h rpc_controller.h svc_name2id.h
+COMMON = common.h rpc_controller.h
 
-all: protoc_middleman client server
+all: protoc_middleman client
 
 %.o:%.cc
 	c++ $(INCLUDES) $(CFLAGS) -o $@ -c $<
@@ -12,10 +12,8 @@ all: protoc_middleman client server
 client: clt.o helloworld.pb.o
 	c++ $(INCLUDES) -o client clt.o helloworld.pb.o -L../ -lrpcclt $(LDFLAGS) 
 
-server: svr.o helloworld.pb.o
-	c++ $(INCLUDES) -o server svr.o helloworld.pb.o  -L../ -lrpcsvr $(LDFLAGS)
 protoc_middleman: helloworld.proto
 	protoc --cpp_out=. helloworld.proto
 
 clean:
-	-rm *.o server client
+	-rm *.o client

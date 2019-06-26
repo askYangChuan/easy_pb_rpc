@@ -9,7 +9,6 @@
 //
 //
 #include "rpc_channel.h"
-#include "svc_name2id.h"
 
 #include <google/protobuf/message.h>
 
@@ -23,15 +22,12 @@ void RpcChannel::CallMethod(const MethodDescriptor *method,	::google::protobuf::
 		if (controller->Failed()) return;
 	}
 
-	const string &service_name = method->service()->name();
-	unsigned int service_id = SERVICE_NAME2ID::instance()->RpcServiceName2Id(service_name.c_str());
-	if (service_id == INVALID_SERVICE_ID) {
-		controller->SetFailed("The Service Not Support!");
-		return;
-	}
+	//const string &service_name = method->full_name();
+    
 	std::string * content =  new std::string;
+    std::string *service_name = new std::string(method->full_name());
 	request->SerializeToString(content);
-	_client->CallMsgEnqueue(_session_id, content, service_id, method->index(),
+	_client->CallMsgEnqueue(_session_id, content, service_name,
 		controller, response, done, _write_pipe);
 	
 	if (!done) {

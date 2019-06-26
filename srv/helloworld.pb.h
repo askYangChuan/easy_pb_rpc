@@ -444,10 +444,6 @@ class EchoService : public ::google::protobuf::Service {
                        const ::FooRequest* request,
                        ::FooResponse* response,
                        ::google::protobuf::Closure* done);
-  virtual void Doo(::google::protobuf::RpcController* controller,
-                       const ::DooRequest* request,
-                       ::DooResponse* response,
-                       ::google::protobuf::Closure* done);
 
   // implements Service ----------------------------------------------
 
@@ -480,10 +476,6 @@ class EchoService_Stub : public EchoService {
   void Foo(::google::protobuf::RpcController* controller,
                        const ::FooRequest* request,
                        ::FooResponse* response,
-                       ::google::protobuf::Closure* done);
-  void Doo(::google::protobuf::RpcController* controller,
-                       const ::DooRequest* request,
-                       ::DooResponse* response,
                        ::google::protobuf::Closure* done);
  private:
   ::google::protobuf::RpcChannel* channel_;

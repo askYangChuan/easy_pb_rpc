@@ -136,12 +136,13 @@ void Session::DoRpcCall(MessageQueue::Node *call_msg) {
 		cb->_response = call_msg->_call._cb._response;
 		cb->_c = call_msg->_call._cb._c;
 		cb->_wake_fd = call_msg->_call._cb._wake_fd;
-
+        if(call_msg->_call._service_name)
+            cb->_service_name = *call_msg->_call._service_name;
+        
 		RPC::RpcRequestData rpc_data;
 
 		rpc_data.set_call_id(call_id);
-		rpc_data.set_service_id(call_msg->_call._service_id);
-		rpc_data.set_method_id(call_msg->_call._method_id);
+        rpc_data.set_service_name(*call_msg->_call._service_name);
 		rpc_data.set_content(*call_msg->_call._req_data);
 		std::string data_buf;
 		rpc_data.SerializeToString(&data_buf);
@@ -154,6 +155,8 @@ void Session::DoRpcCall(MessageQueue::Node *call_msg) {
 CALL_FINALLY:
 	if (call_msg->_call._req_data)
 		delete call_msg->_call._req_data;
+	if (call_msg->_call._service_name)
+		delete call_msg->_call._service_name;
 	if (call_msg->_controller->Failed()) {
 			// 出错立即回调
 			RpcCallBack(call_msg->_call._cb._c, call_msg->_call._cb._wake_fd);
@@ -181,7 +184,11 @@ void Session::OnCallBack(struct evbuffer *input) {
 				evbuffer_drain(input, _data_length);
 				Session::TCallBack *cb = GetCallBack(rpc_data.call_id());
 				if (cb) {
-					cb->_response->ParseFromString(rpc_data.content());
+                    if(rpc_data.err() == 0){
+					    cb->_response->ParseFromString(rpc_data.content());
+                    }else {
+                        cb->_controller->SetFailed("service UnKnown rpc " + cb->_service_name);
+                    }
 					RpcCallBack(cb->_c, cb->_wake_fd);
 				}
 				FreeCallId(rpc_data.call_id()); //TODO: Destroy Session
@@ -223,15 +230,14 @@ bool RpcClient::Start(::google::protobuf::RpcController *controller) {
 
 
 bool RpcClient::CallMsgEnqueue(unsigned int session_id, std::string *req_data, 
-	unsigned int service_id, unsigned int method_id,
+	std::string *service_name,
 	google::protobuf::RpcController *controller, google::protobuf::Message *response,
 	google::protobuf::Closure *c, int wake_fd) {
 	MessageQueue::Node *message = new MessageQueue::Node;
 	message->_kind = MessageQueue::CALL;
 	message->_session_id = session_id;
 	message->_call._req_data = req_data;
-	message->_call._service_id = service_id;
-	message->_call._method_id = method_id;
+	message->_call._service_name = service_name;
 	message->_controller = controller;
 	message->_call._cb._response = response;
 	message->_call._cb._c = c;
